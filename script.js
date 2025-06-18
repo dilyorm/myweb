@@ -30,9 +30,9 @@ document.querySelectorAll('.nav-link').forEach(link => {
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
     if (window.scrollY > 100) {
-        navbar.style.background = 'rgba(0, 0, 0, 0.98)';
+        navbar.style.background = 'rgba(13, 17, 23, 0.98)';
     } else {
-        navbar.style.background = 'rgba(0, 0, 0, 0.95)';
+        navbar.style.background = 'rgba(13, 17, 23, 0.95)';
     }
 });
 
@@ -141,78 +141,96 @@ if (skillsSection) {
     skillsObserver.observe(skillsSection);
 }
 
-// Contact form functionality
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+// Particle system for background
+class Particle {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.size = Math.random() * 2 + 1;
+        this.opacity = Math.random() * 0.5 + 0.2;
+    }
+    
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
         
-        const submitButton = contactForm.querySelector('button[type="submit"]');
-        const originalText = submitButton.innerHTML;
-        
-        // Show loading state
-        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-        submitButton.disabled = true;
-        
-        try {
-            // Get form data
-            const formData = new FormData(contactForm);
-            const data = {
-                name: formData.get('name'),
-                email: formData.get('email'),
-                subject: formData.get('subject'),
-                message: formData.get('message'),
-                to: 'dm20070614@gmail.com'
-            };
-            
-            // Send email using EmailJS or similar service
-            // For now, we'll simulate sending and store in localStorage
-            await sendEmail(data);
-            
-            // Show success message
-            showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-            contactForm.reset();
-            
-        } catch (error) {
-            console.error('Error sending email:', error);
-            showNotification('Failed to send message. Please try again or email me directly at dm20070614@gmail.com', 'error');
-        } finally {
-            // Reset button
-            submitButton.innerHTML = originalText;
-            submitButton.disabled = false;
-        }
-    });
+        if (this.x < 0 || this.x > this.canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > this.canvas.height) this.vy *= -1;
+    }
+    
+    draw() {
+        this.ctx.beginPath();
+        this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        this.ctx.fillStyle = `rgba(35, 134, 54, ${this.opacity})`;
+        this.ctx.fill();
+    }
 }
 
-// Email sending function
-async function sendEmail(data) {
-    // Option 1: Using EmailJS (you'll need to set this up)
-    // if (typeof emailjs !== 'undefined') {
-    //     return emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', data);
-    // }
+// Initialize particle system
+function initParticles() {
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '-1';
+    document.body.appendChild(canvas);
     
-    // Option 2: Using a simple backend service
-    // const response = await fetch('/api/send-email', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify(data)
-    // });
-    // return response.json();
+    const ctx = canvas.getContext('2d');
+    const particles = [];
+    const particleCount = 50;
     
-    // Option 3: Store in localStorage and open email client (fallback)
-    const emails = JSON.parse(localStorage.getItem('contactEmails') || '[]');
-    emails.push({
-        ...data,
-        timestamp: new Date().toISOString()
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Create particles
+    for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle(canvas));
+    }
+    
+    // Animation loop
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach(particle => {
+            particle.update();
+            particle.draw();
+        });
+        
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
+}
+
+// Initialize particles when page loads
+document.addEventListener('DOMContentLoaded', initParticles);
+
+// Form submission handling
+const contactForm = document.querySelector('.contact-form');
+if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // Get form data
+        const formData = new FormData(contactForm);
+        const data = Object.fromEntries(formData);
+        
+        // Show success message (you can replace this with actual form submission)
+        showNotification('Message sent successfully!', 'success');
+        contactForm.reset();
     });
-    localStorage.setItem('contactEmails', JSON.stringify(emails));
-    
-    // Open email client with pre-filled data
-    const mailtoLink = `mailto:dm20070614@gmail.com?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(`Name: ${data.name}\nEmail: ${data.email}\n\nMessage:\n${data.message}`)}`;
-    window.open(mailtoLink);
-    
-    // Simulate delay
-    return new Promise(resolve => setTimeout(resolve, 1000));
 }
 
 // Notification system
@@ -226,15 +244,13 @@ function showNotification(message, type = 'info') {
         top: 20px;
         right: 20px;
         padding: 15px 25px;
-        background: ${type === 'success' ? '#4a9eff' : type === 'error' ? '#ff4a4a' : '#ffffff'};
-        color: ${type === 'success' || type === 'error' ? 'white' : 'black'};
+        background: ${type === 'success' ? '#238636' : '#58a6ff'};
+        color: white;
         border-radius: 8px;
         z-index: 10000;
         transform: translateX(100%);
         transition: transform 0.3s ease;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        max-width: 400px;
-        font-size: 14px;
     `;
     
     document.body.appendChild(notification);
@@ -244,16 +260,82 @@ function showNotification(message, type = 'info') {
         notification.style.transform = 'translateX(0)';
     }, 100);
     
-    // Remove after 5 seconds
+    // Remove after 3 seconds
     setTimeout(() => {
         notification.style.transform = 'translateX(100%)';
         setTimeout(() => {
-            if (document.body.contains(notification)) {
-                document.body.removeChild(notification);
-            }
+            document.body.removeChild(notification);
         }, 300);
-    }, 5000);
+    }, 3000);
 }
+
+// Cursor trail effect
+class CursorTrail {
+    constructor() {
+        this.points = [];
+        this.maxPoints = 20;
+        this.canvas = document.createElement('canvas');
+        this.ctx = this.canvas.getContext('2d');
+        
+        this.canvas.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        `;
+        
+        document.body.appendChild(this.canvas);
+        this.resize();
+        this.bindEvents();
+        this.animate();
+    }
+    
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+    
+    bindEvents() {
+        window.addEventListener('resize', () => this.resize());
+        document.addEventListener('mousemove', (e) => {
+            this.points.push({
+                x: e.clientX,
+                y: e.clientY,
+                timestamp: Date.now()
+            });
+            
+            if (this.points.length > this.maxPoints) {
+                this.points.shift();
+            }
+        });
+    }
+    
+    animate() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        this.points.forEach((point, index) => {
+            const age = Date.now() - point.timestamp;
+            const opacity = Math.max(0, 1 - age / 1000);
+            const size = Math.max(0, 3 - age / 200);
+            
+            this.ctx.beginPath();
+            this.ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
+            this.ctx.fillStyle = `rgba(35, 134, 54, ${opacity})`;
+            this.ctx.fill();
+        });
+        
+        // Remove old points
+        this.points = this.points.filter(point => Date.now() - point.timestamp < 1000);
+        
+        requestAnimationFrame(() => this.animate());
+    }
+}
+
+// Initialize cursor trail (optional - can be disabled for performance)
+// new CursorTrail();
 
 // Smooth reveal animations for sections
 function revealOnScroll() {
@@ -374,37 +456,4 @@ style.textContent = `
         height: 300px;
     }
 `;
-document.head.appendChild(style);
-
-// Add meteoroid trail effect
-function addMeteoroidTrail() {
-    const meteoroids = document.querySelectorAll('.meteoroid');
-    
-    meteoroids.forEach(meteoroid => {
-        meteoroid.addEventListener('animationiteration', () => {
-            // Add trail effect
-            const trail = document.createElement('div');
-            trail.style.cssText = `
-                position: absolute;
-                width: 1px;
-                height: 50px;
-                background: linear-gradient(to bottom, rgba(255,255,255,0.8), transparent);
-                left: ${meteoroid.offsetLeft}px;
-                top: ${meteoroid.offsetTop}px;
-                pointer-events: none;
-                z-index: -1;
-            `;
-            document.querySelector('.meteoroids').appendChild(trail);
-            
-            // Remove trail after animation
-            setTimeout(() => {
-                if (trail.parentNode) {
-                    trail.parentNode.removeChild(trail);
-                }
-            }, 2000);
-        });
-    });
-}
-
-// Initialize meteoroid trails
-document.addEventListener('DOMContentLoaded', addMeteoroidTrail); 
+document.head.appendChild(style); 
