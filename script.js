@@ -456,4 +456,97 @@ style.textContent = `
         height: 300px;
     }
 `;
-document.head.appendChild(style); 
+document.head.appendChild(style);
+
+// --- Loading Screen ---
+window.addEventListener('DOMContentLoaded', () => {
+  const loadingScreen = document.getElementById('loading-screen');
+  const introScreen = document.getElementById('intro-screen');
+  const mainContent = document.getElementById('main-content');
+
+  // Show loading, then intro
+  setTimeout(() => {
+    loadingScreen.style.opacity = '0';
+    setTimeout(() => {
+      loadingScreen.style.display = 'none';
+      introScreen.style.opacity = '1';
+      introScreen.style.pointerEvents = 'auto';
+    }, 400);
+  }, 1200);
+
+  // --- Typing Effect ---
+  const typingText = document.getElementById('typing-text');
+  const message = 'Hello, I am Dilyorbek!';
+  let idx = 0;
+  function type() {
+    if (idx <= message.length) {
+      typingText.textContent = message.slice(0, idx);
+      idx++;
+      setTimeout(type, 80);
+    }
+  }
+  setTimeout(type, 800);
+
+  // --- Stars/Cosmos Animation ---
+  const canvas = document.getElementById('stars-canvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, stars;
+  function resize() {
+    w = window.innerWidth;
+    h = window.innerHeight;
+    canvas.width = w;
+    canvas.height = h;
+    stars = Array.from({length: Math.floor(w * 0.25)}, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 1.1 + 0.2,
+      o: Math.random() * 0.5 + 0.5,
+      s: Math.random() * 0.5 + 0.1
+    }));
+  }
+  function drawStars() {
+    ctx.clearRect(0, 0, w, h);
+    for (const star of stars) {
+      ctx.globalAlpha = star.o;
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI);
+      ctx.fillStyle = '#fff';
+      ctx.shadowColor = '#fff';
+      ctx.shadowBlur = 8;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      // Twinkle
+      if (Math.random() < 0.01) star.o = Math.random() * 0.5 + 0.5;
+    }
+    ctx.globalAlpha = 1;
+  }
+  function animateStars() {
+    for (const star of stars) {
+      star.x += star.s * 0.1;
+      if (star.x > w) star.x = 0;
+    }
+    drawStars();
+    requestAnimationFrame(animateStars);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  animateStars();
+
+  // --- Explore Button ---
+  document.getElementById('explore-btn').addEventListener('click', () => {
+    introScreen.style.opacity = '0';
+    introScreen.style.pointerEvents = 'none';
+    setTimeout(() => {
+      introScreen.style.display = 'none';
+      mainContent.style.display = 'flex';
+      setTimeout(() => {
+        mainContent.style.opacity = '1';
+      }, 10);
+    }, 400);
+  });
+
+  // Initial state
+  introScreen.style.opacity = '0';
+  introScreen.style.pointerEvents = 'none';
+  mainContent.style.opacity = '0';
+}); 
