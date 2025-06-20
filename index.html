@@ -19,6 +19,9 @@
     <div id="intro-screen">
         <canvas id="stars-canvas"></canvas>
         <div class="intro-content">
+            <div class="earth-3d-container">
+                <canvas id="earth-canvas"></canvas>
+            </div>
             <div class="typing-text" id="typing-text"></div>
             <button id="explore-btn" class="explore-btn">Explore</button>
         </div>
@@ -34,75 +37,89 @@
             </nav>
         </header>
         <main>
-            <!-- About Section -->
-            <div class="glass-card">
-            <section class="about-section" data-animate>
-                <h1>Hello, I am <span class="accent">Dilyorbek</span>!</h1>
-                <p>I'm a passionate developer who loves creating innovative solutions and beautiful user experiences. With expertise in modern web technologies, I specialize in building scalable applications that make a difference.</p>
-                <div class="about-stats">
-                    <div class="stat"><span class="stat-number">3+</span><span class="stat-label">Years Experience</span></div>
-                    <div class="stat"><span class="stat-number">50+</span><span class="stat-label">Projects Completed</span></div>
-                    <div class="stat"><span class="stat-number">100%</span><span class="stat-label">Client Satisfaction</span></div>
-                </div>
-            </section>
-            </div>
-
-            <!-- Projects Section -->
-            <div class="glass-card">
-            <section class="projects-section" data-animate>
-                <h2>Featured <span class="accent">Projects</span></h2>
-                <div class="projects-grid">
-                    <div class="project-card">
-                        <div class="project-title">E-Commerce Platform</div>
-                        <div class="project-desc">A full-stack e-commerce solution with authentication, payment, and admin dashboard.</div>
-                        <div class="project-meta">React, Node.js, MongoDB</div>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-title">Task Management App</div>
-                        <div class="project-desc">A collaborative task management application with real-time updates and team features.</div>
-                        <div class="project-meta">Vue.js, Firebase</div>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-title">Data Analytics Dashboard</div>
-                        <div class="project-desc">An interactive dashboard for data visualization and business intelligence.</div>
-                        <div class="project-meta">Python, Django, Chart.js</div>
+            <!-- About Section: Two-column layout -->
+            <div class="about-layout">
+                <div class="about-profile">
+                    <div class="profile-3d">
+                        <!-- Optionally, another 3D model or profile image -->
+                        <canvas id="profile-3d-canvas"></canvas>
                     </div>
                 </div>
-            </section>
-            </div>
-
-            <!-- Skills Section -->
-            <div class="glass-card">
-            <section class="skills-section" data-animate>
-                <h2>Skills & <span class="accent">Technologies</span></h2>
-                <div class="skills-grid">
-                    <div class="skill-item"><span>HTML5</span><div class="skill-bar"><div class="skill-progress" style="width:95%"></div></div></div>
-                    <div class="skill-item"><span>CSS3</span><div class="skill-bar"><div class="skill-progress" style="width:90%"></div></div></div>
-                    <div class="skill-item"><span>JavaScript</span><div class="skill-bar"><div class="skill-progress" style="width:88%"></div></div></div>
-                    <div class="skill-item"><span>React</span><div class="skill-bar"><div class="skill-progress" style="width:85%"></div></div></div>
-                    <div class="skill-item"><span>Node.js</span><div class="skill-bar"><div class="skill-progress" style="width:82%"></div></div></div>
-                    <div class="skill-item"><span>Python</span><div class="skill-bar"><div class="skill-progress" style="width:80%"></div></div></div>
+                <div class="glass-card about-card">
+                    <section class="about-section" data-animate>
+                        <h1>Hello, I am <span class="accent">Dilyorbek</span>!</h1>
+                        <p>I'm a passionate developer who loves creating innovative solutions and beautiful user experiences. With expertise in modern web technologies, I specialize in building scalable applications that make a difference.</p>
+                        <div class="about-stats">
+                            <div class="stat"><span class="stat-number">3+</span><span class="stat-label">Years Experience</span></div>
+                            <div class="stat"><span class="stat-number">50+</span><span class="stat-label">Projects Completed</span></div>
+                            <div class="stat"><span class="stat-number">100%</span><span class="stat-label">Client Satisfaction</span></div>
+                        </div>
+                    </section>
                 </div>
-            </section>
             </div>
 
-            <!-- Contact Section -->
+            <!-- Projects Section: Responsive grid -->
             <div class="glass-card">
-            <section class="contact-section" data-animate>
-                <h2>Get In <span class="accent">Touch</span></h2>
-                <form class="contact-form">
-                    <input type="text" placeholder="Your Name" required>
-                    <input type="email" placeholder="Your Email" required>
-                    <textarea placeholder="Your Message" rows="4" required></textarea>
-                    <button type="submit" class="explore-btn">Send</button>
-                </form>
-            </section>
+                <section class="projects-section" data-animate>
+                    <h2>Featured <span class="accent">Projects</span></h2>
+                    <div class="projects-grid">
+                        <div class="project-card">
+                            <div class="project-title">E-Commerce Platform</div>
+                            <div class="project-desc">A full-stack e-commerce solution with authentication, payment, and admin dashboard.</div>
+                            <div class="project-meta">React, Node.js, MongoDB</div>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-title">Task Management App</div>
+                            <div class="project-desc">A collaborative task management application with real-time updates and team features.</div>
+                            <div class="project-meta">Vue.js, Firebase</div>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-title">Data Analytics Dashboard</div>
+                            <div class="project-desc">An interactive dashboard for data visualization and business intelligence.</div>
+                            <div class="project-meta">Python, Django, Chart.js</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Skills Section: Grid -->
+            <div class="glass-card">
+                <section class="skills-section" data-animate>
+                    <h2>Skills & <span class="accent">Technologies</span></h2>
+                    <div class="skills-grid">
+                        <div class="skill-item"><span>HTML5</span><div class="skill-bar"><div class="skill-progress" style="width:95%"></div></div></div>
+                        <div class="skill-item"><span>CSS3</span><div class="skill-bar"><div class="skill-progress" style="width:90%"></div></div></div>
+                        <div class="skill-item"><span>JavaScript</span><div class="skill-bar"><div class="skill-progress" style="width:88%"></div></div></div>
+                        <div class="skill-item"><span>React</span><div class="skill-bar"><div class="skill-progress" style="width:85%"></div></div></div>
+                        <div class="skill-item"><span>Node.js</span><div class="skill-bar"><div class="skill-progress" style="width:82%"></div></div></div>
+                        <div class="skill-item"><span>Python</span><div class="skill-bar"><div class="skill-progress" style="width:80%"></div></div></div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Contact Section: Side-by-side on desktop -->
+            <div class="contact-layout">
+                <div class="glass-card contact-card">
+                    <section class="contact-section" data-animate>
+                        <h2>Get In <span class="accent">Touch</span></h2>
+                        <form class="contact-form">
+                            <input type="text" placeholder="Your Name" required>
+                            <input type="email" placeholder="Your Email" required>
+                            <textarea placeholder="Your Message" rows="4" required></textarea>
+                            <button type="submit" class="explore-btn">Send</button>
+                        </form>
+                    </section>
+                </div>
+                <div class="contact-illustration">
+                    <!-- Optionally, an SVG or 3D model -->
+                </div>
             </div>
         </main>
         <footer class="site-footer">
             <p>&copy; 2024 Dilyorbek</p>
         </footer>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html> 
