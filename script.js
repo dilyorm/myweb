@@ -458,7 +458,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// --- Loading Screen ---
+// --- Minimal Loader, Intro, and Cosmos ---
 window.addEventListener('DOMContentLoaded', () => {
   const loadingScreen = document.getElementById('loading-screen');
   const introScreen = document.getElementById('intro-screen');
@@ -487,7 +487,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   setTimeout(type, 800);
 
-  // --- Stars/Cosmos Animation ---
+  // --- Minimal Cosmos/Stars Animation ---
   const canvas = document.getElementById('stars-canvas');
   const ctx = canvas.getContext('2d');
   let w, h, stars;
@@ -496,12 +496,13 @@ window.addEventListener('DOMContentLoaded', () => {
     h = window.innerHeight;
     canvas.width = w;
     canvas.height = h;
-    stars = Array.from({length: Math.floor(w * 0.25)}, () => ({
+    // Fewer, smaller, more spaced stars for minimal look
+    stars = Array.from({length: Math.floor(w * 0.12)}, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
-      r: Math.random() * 1.1 + 0.2,
-      o: Math.random() * 0.5 + 0.5,
-      s: Math.random() * 0.5 + 0.1
+      r: Math.random() * 0.7 + 0.2,
+      o: Math.random() * 0.4 + 0.3,
+      s: Math.random() * 0.2 + 0.05
     }));
   }
   function drawStars() {
@@ -512,11 +513,11 @@ window.addEventListener('DOMContentLoaded', () => {
       ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI);
       ctx.fillStyle = '#fff';
       ctx.shadowColor = '#fff';
-      ctx.shadowBlur = 8;
+      ctx.shadowBlur = 2;
       ctx.fill();
       ctx.shadowBlur = 0;
-      // Twinkle
-      if (Math.random() < 0.01) star.o = Math.random() * 0.5 + 0.5;
+      // Minimal twinkle
+      if (Math.random() < 0.008) star.o = Math.random() * 0.4 + 0.3;
     }
     ctx.globalAlpha = 1;
   }
