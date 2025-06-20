@@ -9,32 +9,7 @@ function scrollToSection(sectionId) {
     }
 }
 
-// Mobile navigation toggle
-const hamburger = document.querySelector('.hamburger');
-const navMenu = document.querySelector('.nav-menu');
 
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
-
-// Close mobile menu when clicking on a link
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('active');
-    });
-});
-
-// Navbar background on scroll
-window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 100) {
-        navbar.style.background = 'rgba(13, 17, 23, 0.98)';
-    } else {
-        navbar.style.background = 'rgba(13, 17, 23, 0.95)';
-    }
-});
 
 // Typing animation for code
 function typeWriter(element, text, speed = 50) {
@@ -480,6 +455,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (mainContent) {
       mainContent.style.display = 'flex';
       mainContent.style.opacity = '1';
+      revealSections();
     }
     if (loadingScreen) loadingScreen.style.display = 'none';
     if (introScreen) introScreen.style.display = 'none';
@@ -560,6 +536,7 @@ window.addEventListener('DOMContentLoaded', () => {
       mainContent.style.display = 'flex';
       setTimeout(() => {
         mainContent.style.opacity = '1';
+        revealSections();
       }, 10);
     }, 400);
   });
@@ -576,7 +553,18 @@ window.addEventListener('DOMContentLoaded', () => {
       if (loadingScreen) loadingScreen.style.display = 'none';
       mainContent.style.display = 'flex';
       mainContent.style.opacity = '1';
+      revealSections();
       console.log('Fallback: showing main content after timeout');
     }
   }, 6000);
+
+  // Animate in all [data-animate] sections with a staggered delay
+  function revealSections() {
+    const sections = document.querySelectorAll('[data-animate]');
+    sections.forEach((section, i) => {
+      setTimeout(() => {
+        section.classList.add('visible');
+      }, 200 + i * 200);
+    });
+  }
 }); 
