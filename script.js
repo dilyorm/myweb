@@ -463,6 +463,28 @@ window.addEventListener('DOMContentLoaded', () => {
   const loadingScreen = document.getElementById('loading-screen');
   const introScreen = document.getElementById('intro-screen');
   const mainContent = document.getElementById('main-content');
+  const exploreBtn = document.getElementById('explore-btn');
+  const typingText = document.getElementById('typing-text');
+  const canvas = document.getElementById('stars-canvas');
+
+  // Debug: log missing elements
+  if (!loadingScreen) console.log('Missing: #loading-screen');
+  if (!introScreen) console.log('Missing: #intro-screen');
+  if (!mainContent) console.log('Missing: #main-content');
+  if (!exploreBtn) console.log('Missing: #explore-btn');
+  if (!typingText) console.log('Missing: #typing-text');
+  if (!canvas) console.log('Missing: #stars-canvas');
+
+  // Fallback: if any critical element is missing, show main content
+  if (!loadingScreen || !introScreen || !mainContent || !exploreBtn || !typingText || !canvas) {
+    if (mainContent) {
+      mainContent.style.display = 'flex';
+      mainContent.style.opacity = '1';
+    }
+    if (loadingScreen) loadingScreen.style.display = 'none';
+    if (introScreen) introScreen.style.display = 'none';
+    return;
+  }
 
   // Show loading, then intro
   setTimeout(() => {
@@ -475,7 +497,6 @@ window.addEventListener('DOMContentLoaded', () => {
   }, 1200);
 
   // --- Typing Effect ---
-  const typingText = document.getElementById('typing-text');
   const message = 'Hello, I am Dilyorbek!';
   let idx = 0;
   function type() {
@@ -488,7 +509,6 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(type, 800);
 
   // --- Minimal Cosmos/Stars Animation ---
-  const canvas = document.getElementById('stars-canvas');
   const ctx = canvas.getContext('2d');
   let w, h, stars;
   function resize() {
@@ -496,7 +516,6 @@ window.addEventListener('DOMContentLoaded', () => {
     h = window.innerHeight;
     canvas.width = w;
     canvas.height = h;
-    // Fewer, smaller, more spaced stars for minimal look
     stars = Array.from({length: Math.floor(w * 0.12)}, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
@@ -516,7 +535,6 @@ window.addEventListener('DOMContentLoaded', () => {
       ctx.shadowBlur = 2;
       ctx.fill();
       ctx.shadowBlur = 0;
-      // Minimal twinkle
       if (Math.random() < 0.008) star.o = Math.random() * 0.4 + 0.3;
     }
     ctx.globalAlpha = 1;
@@ -534,7 +552,7 @@ window.addEventListener('DOMContentLoaded', () => {
   animateStars();
 
   // --- Explore Button ---
-  document.getElementById('explore-btn').addEventListener('click', () => {
+  exploreBtn.addEventListener('click', () => {
     introScreen.style.opacity = '0';
     introScreen.style.pointerEvents = 'none';
     setTimeout(() => {
@@ -550,4 +568,15 @@ window.addEventListener('DOMContentLoaded', () => {
   introScreen.style.opacity = '0';
   introScreen.style.pointerEvents = 'none';
   mainContent.style.opacity = '0';
+
+  // Fallback: if something goes wrong, always show main content after 6 seconds
+  setTimeout(() => {
+    if (mainContent.style.opacity === '0') {
+      if (introScreen) introScreen.style.display = 'none';
+      if (loadingScreen) loadingScreen.style.display = 'none';
+      mainContent.style.display = 'flex';
+      mainContent.style.opacity = '1';
+      console.log('Fallback: showing main content after timeout');
+    }
+  }, 6000);
 }); 
